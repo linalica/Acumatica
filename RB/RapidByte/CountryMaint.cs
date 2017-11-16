@@ -9,10 +9,10 @@ namespace RB.RapidByte
 {
     public class CountryMaint : PXGraph<CountryMaint>
     {
+        public PXSelect<Country> Countries;
 
         public PXCancel<Country> Cancel;
         public PXSave<Country> Save;
-        public PXSelect<Country> Countries;
 
     }
 }

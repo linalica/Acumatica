@@ -12,31 +12,31 @@
 			<px:PXLayoutRule runat="server" StartRow="True" ControlSize="S" LabelsWidth="S" StartColumn="True"/>
 		    <px:PXSelector ID="edOrderNbr" runat="server" DataField="OrderNbr">
             </px:PXSelector>
-            <px:PXDateTimeEdit ID="edOrderDate" runat="server" AlreadyLocalized="False" DataField="OrderDate">
+            <px:PXDateTimeEdit ID="edOrderDate" runat="server" AlreadyLocalized="False" DataField="OrderDate" DefaultLocale="">
             </px:PXDateTimeEdit>
-            <px:PXDropDown ID="edStatus" runat="server" DataField="Status">
+            <px:PXDropDown ID="edStatus" runat="server" DataField="Status" Enabled="False">
             </px:PXDropDown>
-            <px:PXCheckBox ID="edHold" runat="server" AlreadyLocalized="False" DataField="Hold" Text="Hold">
+            <px:PXCheckBox ID="edHold" runat="server" AlreadyLocalized="False" DataField="Hold" Text="Hold" CommitChanges="True">
             </px:PXCheckBox>
             <px:PXLayoutRule runat="server" ControlSize="XM" LabelsWidth="S" StartColumn="True">
             </px:PXLayoutRule>
             <px:PXSelector ID="edCustomerID" runat="server" DataField="CustomerID">
             </px:PXSelector>
-            <px:PXDateTimeEdit ID="edRequiredDate" runat="server" AlreadyLocalized="False" DataField="RequiredDate">
+            <px:PXDateTimeEdit ID="edRequiredDate" runat="server" AlreadyLocalized="False" DataField="RequiredDate" DefaultLocale="">
             </px:PXDateTimeEdit>
-            <px:PXDateTimeEdit ID="edShippedDate" runat="server" AlreadyLocalized="False" DataField="ShippedDate">
+            <px:PXDateTimeEdit ID="edShippedDate" runat="server" AlreadyLocalized="False" DataField="ShippedDate" DefaultLocale="">
             </px:PXDateTimeEdit>
             <px:PXLayoutRule runat="server" ColumnSpan="2">
             </px:PXLayoutRule>
-            <px:PXTextEdit ID="edDescription" runat="server" AlreadyLocalized="False" DataField="Description">
+            <px:PXTextEdit ID="edDescription" runat="server" AlreadyLocalized="False" DataField="Description" DefaultLocale="">
             </px:PXTextEdit>
             <px:PXLayoutRule runat="server" ControlSize="XM" LabelsWidth="S" StartColumn="True">
             </px:PXLayoutRule>
-            <px:PXNumberEdit ID="edLinesTotal" runat="server" AlreadyLocalized="False" DataField="LinesTotal">
+            <px:PXNumberEdit ID="edLinesTotal" runat="server" AlreadyLocalized="False" DataField="LinesTotal" DefaultLocale="">
             </px:PXNumberEdit>
-            <px:PXNumberEdit ID="edTaxTotal" runat="server" AlreadyLocalized="False" DataField="TaxTotal">
+            <px:PXNumberEdit ID="edTaxTotal" runat="server" AlreadyLocalized="False" DataField="TaxTotal" DefaultLocale="">
             </px:PXNumberEdit>
-            <px:PXNumberEdit ID="edOrderTotal" runat="server" AlreadyLocalized="False" DataField="OrderTotal">
+            <px:PXNumberEdit ID="edOrderTotal" runat="server" AlreadyLocalized="False" DataField="OrderTotal" DefaultLocale="">
             </px:PXNumberEdit>
 		</Template>
 	</px:PXFormView>
@@ -57,11 +57,11 @@ Try to change filter to see records here."></EmptyMsg>
 		<Levels>
 			<px:PXGridLevel DataKeyNames="OrderNbr,ProductID" DataMember="OrderDetails">
 			    <Columns>
-                    <px:PXGridColumn DataField="ProductID">
+                    <px:PXGridColumn DataField="ProductID" CommitChanges="True">
                     </px:PXGridColumn>
                     <px:PXGridColumn DataField="UnitPrice" TextAlign="Right" Width="100px">
                     </px:PXGridColumn>
-                    <px:PXGridColumn DataField="OrderQty" TextAlign="Right" Width="100px">
+                    <px:PXGridColumn DataField="OrderQty" TextAlign="Right" Width="100px" CommitChanges="True">
                     </px:PXGridColumn>
                     <px:PXGridColumn DataField="StockUnit" Width="80px">
                     </px:PXGridColumn>

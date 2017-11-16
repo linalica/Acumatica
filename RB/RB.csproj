@@ -92,6 +92,8 @@
     <Compile Include="RapidByte\DAC\Product.cs" />
     <Compile Include="RapidByte\DAC\SalesOrder.cs" />
     <Compile Include="RapidByte\SalesOrderEntry.cs" />
+    <Compile Include="RapidByte\SalesOrderInq.cs" />
+    <Compile Include="RapidByte\SalesOrderProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CustomFields.config" />

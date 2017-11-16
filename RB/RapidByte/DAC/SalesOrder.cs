@@ -272,8 +272,17 @@
 				this._tstamp = value;
 			}
 		}
-		#endregion
-	}
+        #endregion
+        #region Selected
+        public abstract class selected : IBqlField
+        {
+        }
+        [PXBool]
+        [PXUIField(DisplayName = "Selected")]
+        public virtual bool? Selected { get; set; }
+
+        #endregion
+    }
 
     public class OrderStatus
     {
