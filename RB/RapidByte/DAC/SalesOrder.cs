@@ -281,7 +281,8 @@
         [PXUIField(DisplayName = "Selected")]
         public virtual bool? Selected { get; set; }
 
-        #endregion
+        #endregion
+
     }
 
     public class OrderStatus

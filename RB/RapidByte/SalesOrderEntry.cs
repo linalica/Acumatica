@@ -193,21 +193,27 @@ namespace RB.RapidByte
             }
         }
 
+        /*
         protected virtual void SalesOrder_RowSelected(PXCache sender, PXRowSelectedEventArgs e)
         {
             SalesOrder order = (SalesOrder)e.Row;
-            if (order == null) return;
-            bool editable = order.Status !=
-            OrderStatus.Approved && order.Status !=
-            OrderStatus.Completed;
+            if (order == null)
+            {
+                return;
+            }
+
+            bool editable = order.Status != OrderStatus.Approved && order.Status != OrderStatus.Completed;
+
             Orders.Cache.AllowUpdate = editable;
             Orders.Cache.AllowDelete = editable;
+
             PXUIFieldAttribute.SetEnabled(sender, order, editable);
             OrderDetails.Cache.AllowDelete = editable;
             OrderDetails.Cache.AllowInsert = editable;
             OrderDetails.Cache.AllowUpdate = editable;
             Approve.SetEnabled(editable && order.Hold != true);
         }
+        */
 
     }
 }

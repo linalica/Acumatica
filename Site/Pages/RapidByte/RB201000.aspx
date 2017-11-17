@@ -8,16 +8,6 @@
 <asp:Content ID="cont2" ContentPlaceHolderID="phL" runat="Server">
     <px:PXGrid ID="grid" runat="server" Style="z-index: 100; top: 7px; left: 4px; height: 398px; width: 99%;"
 		AllowPaging="True" AllowSearch="True" AdjustPageSize="Auto" DataSourceID="ds" SkinID="Primary" TabIndex="1500" TemporaryFilterCaption="Filter Applied">
-<EmptyMsg ComboAddMessage="No records found.
-Try to change filter or modify parameters above to see records here." NamedComboMessage="No records found as &#39;{0}&#39;.
-Try to change filter or modify parameters above to see records here." NamedComboAddMessage="No records found as &#39;{0}&#39;.
-Try to change filter or modify parameters above to see records here." FilteredMessage="No records found.
-Try to change filter to see records here." FilteredAddMessage="No records found.
-Try to change filter to see records here." NamedFilteredMessage="No records found as &#39;{0}&#39;.
-Try to change filter to see records here." NamedFilteredAddMessage="No records found as &#39;{0}&#39;.
-Try to change filter to see records here." AnonFilteredMessage="No records found.
-Try to change filter to see records here." AnonFilteredAddMessage="No records found.
-Try to change filter to see records here."></EmptyMsg>
 		<Levels>
 			<px:PXGridLevel DataKeyNames="CountryCD" DataMember="Countries">
 			    <Columns>
