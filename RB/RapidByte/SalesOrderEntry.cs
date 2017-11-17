@@ -9,8 +9,9 @@ namespace RB.RapidByte
 {
     public class SalesOrderEntry : PXGraph<SalesOrderEntry, SalesOrder>
     {
-
+        // Provides an interface for manipulation of sales orders
         public PXSelect<SalesOrder> Orders;
+        // Provides an interface for manipulation of detail lines of the specified order
         public PXSelect<OrderLine, Where<OrderLine.orderNbr, Equal<Current<SalesOrder.orderNbr>>>> OrderDetails;
 
         protected virtual void OrderLine_ProductID_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
@@ -206,6 +207,7 @@ namespace RB.RapidByte
             OrderDetails.Cache.AllowInsert = editable;
             OrderDetails.Cache.AllowUpdate = editable;
             Approve.SetEnabled(editable && order.Hold != true);
-        }
+        }
+
     }
 }

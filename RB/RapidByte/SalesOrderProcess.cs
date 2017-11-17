@@ -10,7 +10,9 @@ namespace RB.RapidByte
     public class SalesOrderProcess : PXGraph<SalesOrderProcess>
     {
         public PXProcessing<SalesOrder> Orders;
-        public PXCancel<SalesOrder> Cancel;        public SalesOrderProcess()
+        public PXCancel<SalesOrder> Cancel;
+
+        public SalesOrderProcess()
         {
             Orders.SetProcessCaption("Approve");
             Orders.SetProcessAllCaption("Approve All");
@@ -20,6 +22,7 @@ namespace RB.RapidByte
                 graph.Clear();
                 graph.ApproveOrder(order, true);
             });
-        }
+        }
+
     }
 }
