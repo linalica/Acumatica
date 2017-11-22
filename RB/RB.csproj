@@ -91,12 +91,16 @@
     <Compile Include="RapidByte\DAC\OrderLine.cs" />
     <Compile Include="RapidByte\DAC\Product.cs" />
     <Compile Include="RapidByte\DAC\SalesOrder.cs" />
+    <Compile Include="RapidByte\DAC\Shipment.cs" />
+    <Compile Include="RapidByte\DAC\ShipmentLine.cs" />
     <Compile Include="RapidByte\DAC\Supplier.cs" />
     <Compile Include="RapidByte\DAC\SupplierProduct.cs" />
     <Compile Include="RapidByte\ProductMaint.cs" />
     <Compile Include="RapidByte\SalesOrderEntry.cs" />
     <Compile Include="RapidByte\SalesOrderInq.cs" />
     <Compile Include="RapidByte\SalesOrderProcess.cs" />
+    <Compile Include="RapidByte\ShipmentEntry.cs" />
+    <Compile Include="RapidByte\SupplierInq.cs" />
     <Compile Include="RapidByte\SupplierMaint.cs" />
   </ItemGroup>
   <ItemGroup>

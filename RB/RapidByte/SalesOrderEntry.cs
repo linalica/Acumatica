@@ -193,7 +193,7 @@ namespace RB.RapidByte
             }
         }
 
-        /*
+        
         protected virtual void SalesOrder_RowSelected(PXCache sender, PXRowSelectedEventArgs e)
         {
             SalesOrder order = (SalesOrder)e.Row;
@@ -213,7 +213,7 @@ namespace RB.RapidByte
             OrderDetails.Cache.AllowUpdate = editable;
             Approve.SetEnabled(editable && order.Hold != true);
         }
-        */
+        
 
     }
 }
