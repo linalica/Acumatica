@@ -43,7 +43,8 @@
              typeof(Customer.customerID),
              typeof(Customer.customerCD),
              typeof(Customer.companyName),
-             SubstituteKey = typeof(Customer.customerCD))]
+             SubstituteKey = typeof(Customer.customerCD))]
+
         public virtual int? CustomerID
         {
             get
