@@ -63,8 +63,19 @@
         }
         protected string _ShipmentType;
         [PXDBString(1, IsFixed = true)]
-        [PXDefault()]
+        [PXDefault(ShipmentTypes.Single)]
         [PXUIField(DisplayName = "Delivery Type")]
+        [PXStringList(
+             new string[]
+             {
+                 ShipmentTypes.Single,
+                 ShipmentTypes.Multiple
+             },
+             new string[]
+             {
+                 "Single",
+                 "Multiple"
+             })]
         public virtual string ShipmentType
         {
             get
@@ -103,8 +114,23 @@
         }
         protected string _Status;
         [PXDBString(1, IsFixed = true)]
-        [PXDefault()]
+        [PXDefault(ShipmentStatus.OnHold)]
         [PXUIField(DisplayName = "Status")]
+        [PXStringList(
+             new string[]
+             {
+                 ShipmentStatus.OnHold,
+                 ShipmentStatus.Shipping,
+                 ShipmentStatus.Cancelled,
+                 ShipmentStatus.Delivered
+             },
+             new string[]
+             {
+                 "On Hold",
+                 "Shipping",
+                 "Canceled",
+                 "Delivered"
+             })]
         public virtual string Status
         {
             get
@@ -360,5 +386,18 @@
             }
         }
         #endregion
+
+        public static class ShipmentTypes
+        {
+            public const string Single = "S";
+            public const string Multiple = "M";
+        }
+        public static class ShipmentStatus
+        {
+            public const string OnHold = "H";
+            public const string Shipping = "S";
+            public const string Cancelled = "C";
+            public const string Delivered = "D";
+        }
     }
 }

@@ -6,6 +6,15 @@
     [System.SerializableAttribute()]
     public class ShipmentLine : PX.Data.IBqlTable
     {
+        public const string GiftCard = "CARD";
+        public class giftCard : Constant<string>
+        {
+            public giftCard()
+            : base(GiftCard)
+            {
+            }
+        }
+
         #region ShipmentNbr
         public abstract class shipmentNbr : PX.Data.IBqlField
         {

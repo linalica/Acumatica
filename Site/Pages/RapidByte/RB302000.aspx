@@ -13,9 +13,9 @@
             <px:PXLayoutRule runat="server" StartRow="True" ControlSize="SM" LabelsWidth="S" StartColumn="True" />
             <px:PXSelector ID="edShipmentNbr" runat="server" DataField="ShipmentNbr">
             </px:PXSelector>
-            <px:PXTextEdit ID="edShipmentType" runat="server" AlreadyLocalized="False" DataField="ShipmentType">
-            </px:PXTextEdit>
-            <px:PXDateTimeEdit ID="edDeliveryDate" runat="server" AlreadyLocalized="False" DataField="DeliveryDate">
+            <px:PXDropDown ID="edShipmentType" runat="server" DataField="ShipmentType" CommitChanges="True">
+            </px:PXDropDown>
+            <px:PXDateTimeEdit ID="edShipmentDate" runat="server" AlreadyLocalized="False" DataField="ShipmentDate">
             </px:PXDateTimeEdit>
             <px:PXSelector ID="edCustomerID" runat="server" DataField="CustomerID">
             </px:PXSelector>
@@ -25,10 +25,10 @@
             </px:PXTextEdit>
             <px:PXLayoutRule runat="server" StartColumn="True" ControlSize="S" LabelsWidth="S">
             </px:PXLayoutRule>
-            <px:PXDateTimeEdit ID="edShipmentDate" runat="server" AlreadyLocalized="False" DataField="ShipmentDate">
+            <px:PXDateTimeEdit ID="edDeliveryDate" runat="server" AlreadyLocalized="False" DataField="DeliveryDate">
             </px:PXDateTimeEdit>
-            <px:PXTextEdit ID="edStatus" runat="server" AlreadyLocalized="False" DataField="Status">
-            </px:PXTextEdit>
+            <px:PXDropDown ID="edStatus" runat="server" DataField="Status" CommitChanges="True">
+            </px:PXDropDown>
             <px:PXDateTimeEdit ID="edDeliveryMaxDate" runat="server" AlreadyLocalized="False" DataField="DeliveryMaxDate">
             </px:PXDateTimeEdit>
             <px:PXLayoutRule runat="server" StartColumn="True" ColumnWidth="S" LabelsWidth="S">
@@ -43,17 +43,25 @@
     </px:PXFormView>
 </asp:Content>
 <asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
-    <px:PXGrid ID="grid" runat="server" DataSourceID="ds" Style="z-index: 100" Width="100%" Height="150px" SkinID="Details" TabIndex="100" 
+    <px:PXGrid ID="grid" runat="server" DataSourceID="ds" Style="z-index: 100" Width="100%" Height="150px" SkinID="Details" TabIndex="100"
         TemporaryFilterCaption="Filter Applied" SyncPosition="True">
-<EmptyMsg ComboAddMessage="No records found.
-Try to change filter or modify parameters above to see records here." NamedComboMessage="No records found as &#39;{0}&#39;.
-Try to change filter or modify parameters above to see records here." NamedComboAddMessage="No records found as &#39;{0}&#39;.
-Try to change filter or modify parameters above to see records here." FilteredMessage="No records found.
-Try to change filter to see records here." FilteredAddMessage="No records found.
-Try to change filter to see records here." NamedFilteredMessage="No records found as &#39;{0}&#39;.
-Try to change filter to see records here." NamedFilteredAddMessage="No records found as &#39;{0}&#39;.
-Try to change filter to see records here." AnonFilteredMessage="No records found.
-Try to change filter to see records here." AnonFilteredAddMessage="No records found.
+        <EmptyMsg ComboAddMessage="No records found.
+Try to change filter or modify parameters above to see records here."
+            NamedComboMessage="No records found as &#39;{0}&#39;.
+Try to change filter or modify parameters above to see records here."
+            NamedComboAddMessage="No records found as &#39;{0}&#39;.
+Try to change filter or modify parameters above to see records here."
+            FilteredMessage="No records found.
+Try to change filter to see records here."
+            FilteredAddMessage="No records found.
+Try to change filter to see records here."
+            NamedFilteredMessage="No records found as &#39;{0}&#39;.
+Try to change filter to see records here."
+            NamedFilteredAddMessage="No records found as &#39;{0}&#39;.
+Try to change filter to see records here."
+            AnonFilteredMessage="No records found.
+Try to change filter to see records here."
+            AnonFilteredAddMessage="No records found.
 Try to change filter to see records here."></EmptyMsg>
         <Levels>
             <px:PXGridLevel DataKeyNames="ShipmentNbr,ProductID"
@@ -85,11 +93,11 @@ Try to change filter to see records here."></EmptyMsg>
                     </px:PXLayoutRule>
                 </RowTemplate>
                 <Columns>
-                    <px:PXGridColumn DataField="ProductID">
+                    <px:PXGridColumn DataField="ProductID" Width="120px" CommitChanges="True">
                     </px:PXGridColumn>
                     <px:PXGridColumn DataField="Description" Width="200px">
                     </px:PXGridColumn>
-                    <px:PXGridColumn DataField="LineQty" TextAlign="Right" Width="100px">
+                    <px:PXGridColumn DataField="LineQty" TextAlign="Right" Width="100px" CommitChanges="True">
                     </px:PXGridColumn>
                     <px:PXGridColumn DataField="Cancelled" TextAlign="Center" Type="CheckBox" Width="60px">
                     </px:PXGridColumn>
