@@ -45,24 +45,6 @@
 <asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
     <px:PXGrid ID="grid" runat="server" DataSourceID="ds" Style="z-index: 100" Width="100%" Height="150px" SkinID="Details" TabIndex="100"
         TemporaryFilterCaption="Filter Applied" SyncPosition="True">
-        <EmptyMsg ComboAddMessage="No records found.
-Try to change filter or modify parameters above to see records here."
-            NamedComboMessage="No records found as &#39;{0}&#39;.
-Try to change filter or modify parameters above to see records here."
-            NamedComboAddMessage="No records found as &#39;{0}&#39;.
-Try to change filter or modify parameters above to see records here."
-            FilteredMessage="No records found.
-Try to change filter to see records here."
-            FilteredAddMessage="No records found.
-Try to change filter to see records here."
-            NamedFilteredMessage="No records found as &#39;{0}&#39;.
-Try to change filter to see records here."
-            NamedFilteredAddMessage="No records found as &#39;{0}&#39;.
-Try to change filter to see records here."
-            AnonFilteredMessage="No records found.
-Try to change filter to see records here."
-            AnonFilteredAddMessage="No records found.
-Try to change filter to see records here."></EmptyMsg>
         <Levels>
             <px:PXGridLevel DataKeyNames="ShipmentNbr,ProductID"
                 DataMember="ShipmentLines">
@@ -101,7 +83,7 @@ Try to change filter to see records here."></EmptyMsg>
                     </px:PXGridColumn>
                     <px:PXGridColumn DataField="Cancelled" TextAlign="Center" Type="CheckBox" Width="60px">
                     </px:PXGridColumn>
-                    <px:PXGridColumn DataField="ShipmentDate" Width="90px">
+                    <px:PXGridColumn DataField="ShipmentDate" Width="90px" CommitChanges="True">
                     </px:PXGridColumn>
                     <px:PXGridColumn DataField="ShipmentTime" TextAlign="Right">
                     </px:PXGridColumn>

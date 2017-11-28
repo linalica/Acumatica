@@ -19,52 +19,6 @@ namespace RB.RapidByte
         public PXSelect<Product, Where<Product.productCD, Equal<ShipmentLine.giftCard>>> GiftCard;
 
 
-        protected virtual void Shipment_DeliveryDate_FieldVerifying(PXCache sender, PXFieldVerifyingEventArgs e)
-        {
-            Shipment row = (Shipment)e.Row;
-            if (e.NewValue == null)
-            {
-                return;
-            }
-            if (row.ShipmentDate != null && row.ShipmentDate > (DateTime)e.NewValue)
-            {
-                // Correcting the value
-                e.NewValue = row.ShipmentDate;
-                // Throwing an exception to break the update process
-                throw new PXSetPropertyException<Shipment.shipmentDate>("Shipment Date cannot be later than Delivery Date");
-            }
-        }
-        protected virtual void Shipment_Status_FieldVerifying(PXCache sender, PXFieldVerifyingEventArgs e)
-        {
-            if (e.NewValue == null)
-            {
-                return;
-            }
-
-            bool errorOccured = false;
-            if ((string)e.NewValue == Shipment.ShipmentStatus.Shipping)
-            {
-                // Validating LineQty in all related ShipmentLine data records
-                foreach (ShipmentLine line in ShipmentLines.Select())
-                {
-                    if (line.LineQty == 0)
-                    {
-                        // Adding an error message to a grid cell
-                        ShipmentLines.Cache.RaiseExceptionHandling<
-                        ShipmentLine.lineQty>(
-                                        line, line.LineQty,
-                                        new PXSetPropertyException("Item Qty. is not specified."));
-                        errorOccured = true;
-                    }
-                }
-            }
-            if (errorOccured)
-            {
-                // Adding an error message to a UI control
-                e.NewValue = sender.GetValue<Shipment.status>(e.Row);
-                throw new PXSetPropertyException("Product quantities have not been specified.");
-            }
-        }
         protected virtual void Shipment_RowInserted(PXCache sender, PXRowInsertedEventArgs e)
         {
             if (ShipmentLines.Select().Count == 0)
@@ -201,6 +155,74 @@ namespace RB.RapidByte
                 }
             }
         }
+        protected virtual void Shipment_DeliveryDate_FieldVerifying(PXCache sender, PXFieldVerifyingEventArgs e)
+        {
+            Shipment row = (Shipment)e.Row;
+            if (e.NewValue == null)
+            {
+                return;
+            }
+            if (row.ShipmentDate != null && row.ShipmentDate > (DateTime)e.NewValue)
+            {
+                // Correcting the value
+                e.NewValue = row.ShipmentDate;
+                // Throwing an exception to break the update process
+                throw new PXSetPropertyException<Shipment.shipmentDate>("Shipment Date cannot be later than Delivery Date");
+            }
+        }
+        protected virtual void Shipment_Status_FieldVerifying(PXCache sender, PXFieldVerifyingEventArgs e)
+        {
+            if (e.NewValue == null)
+            {
+                return;
+            }
+
+            bool errorOccured = false;
+            if ((string)e.NewValue == Shipment.ShipmentStatus.Shipping)
+            {
+                // Validating LineQty in all related ShipmentLine data records
+                foreach (ShipmentLine line in ShipmentLines.Select())
+                {
+                    if (line.LineQty == 0)
+                    {
+                        // Adding an error message to a grid cell
+                        ShipmentLines.Cache.RaiseExceptionHandling<
+                        ShipmentLine.lineQty>(
+                                        line, line.LineQty,
+                                        new PXSetPropertyException("Item Qty. is not specified."));
+                        errorOccured = true;
+                    }
+                }
+            }
+            if (errorOccured)
+            {
+                // Adding an error message to a UI control
+                e.NewValue = sender.GetValue<Shipment.status>(e.Row);
+                throw new PXSetPropertyException("Product quantities have not been specified.");
+            }
+        }
+        protected virtual void Shipment_ShipmentType_FieldVerifying(PXCache sender, PXFieldVerifyingEventArgs e)
+        {
+            Shipment row = (Shipment)e.Row;
+            if (e.NewValue == null)
+            {
+                return;
+            }
+            if ((string)e.NewValue == Shipment.ShipmentTypes.Single && row.ShippedQty > 0)
+            {
+                throw new PXSetPropertyException("Delivery Type can not be changed when a shipment is partially delivered.");
+            }
+        }
+        protected virtual void Shipment_TotalQty_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
+        {
+            Shipment row = (Shipment)e.Row;
+            row.PendingQty = row.TotalQty - row.ShippedQty;
+        }        protected virtual void Shipment_ShippedQty_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
+        {
+            Shipment row = (Shipment)e.Row;
+            row.PendingQty -= row.ShippedQty;
+            row.PendingQty += (decimal)e.OldValue;
+        }
 
         //protected virtual void ShipmentLine_RowInserting(PXCache sender, PXRowInsertingEventArgs e)
         //{
@@ -220,66 +242,6 @@ namespace RB.RapidByte
 
         //}
 
-        protected virtual void ShipmentLine_ProductID_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
-        {
-            // Obtain the new data record that contains the updated values of all data fields
-            ShipmentLine line = (ShipmentLine)e.Row;
-            line.Description = string.Empty;
-            if (line.ProductID != null)
-            {
-                Product product = PXSelectorAttribute.Select<ShipmentLine.productID>(sender, line) as Product;
-                if (product != null)
-                {
-                    // Copy the product name to the description of the shipment line
-                    line.Description = product.ProductName;
-                }
-            }
-        }
-        protected virtual void ShipmentLine_Gift_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
-        {
-            ShipmentLine line = (ShipmentLine)e.Row;
-            if (line == null)
-            {
-                return;
-            }
-            Product card = GiftCard.Select();
-            if (card != null && line.ProductID == card.ProductID)
-            {
-                // Setting the default value
-                e.NewValue = true;
-                // Setting a flag to prevent execution of FieldDefaulting event
-                // handlers that are defined in attributes
-                e.Cancel = true;
-            }
-        }
-        protected virtual void ShipmentLine_LineQty_FieldVerifying(PXCache sender, PXFieldVerifyingEventArgs e)
-        {
-            ShipmentLine line = (ShipmentLine)e.Row;
-            if (e.NewValue == null)
-            {
-                return;
-            }
-            if ((decimal)e.NewValue < 0)
-            {
-                // Throwing an exception to cancel assignment of the new
-                // value to the field
-                throw new PXSetPropertyException("Item Qty. cannot be negative.");
-            }
-            // Retrieving the product related to the shipment line
-            Product product = PXSelect<Product, Where<Product.productID,
-                                Equal<Required<Product.productID>>>>.Select(this, line.ProductID);
-            if (product != null && (decimal)e.NewValue < product.MinAvailQty)
-            {
-                // Correcting the LineQty value
-                e.NewValue = product.MinAvailQty;
-
-                // Raising the ExceptionHandling event for LineQty to attach the exception object to the field
-                sender.RaiseExceptionHandling<ShipmentLine.lineQty>(line, e.NewValue,
-                                                new PXSetPropertyException(
-                                                "Item Qty. was too small for the selected product.",
-                                                PXErrorLevel.Warning));
-            }
-        }
         protected virtual void ShipmentLine_RowInserted(PXCache sender, PXRowInsertedEventArgs e)
         {
             ShipmentLine line = (ShipmentLine)e.Row;
@@ -297,7 +259,46 @@ namespace RB.RapidByte
             }
             PXUIFieldAttribute.SetEnabled(sender, line, line.Gift != true);
             PXUIFieldAttribute.SetEnabled<ShipmentLine.lineQty>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping);
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping);
+            // Enabling or disabling the Cancelled field
+            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
+            {
+                PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping && line.ShipmentDate == null);
+            }
+            else
+            {
+                PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping);
+            }
+            // Enabling or disabling other fields
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentDate>(sender, line, row.Status == Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentTime>(sender, line, row.Status == Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMinTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMaxTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
+        }
+        protected virtual void ShipmentLine_RowUpdating(PXCache sender, PXRowUpdatingEventArgs e)
+        {
+            ShipmentLine line = (ShipmentLine)e.NewRow;
+            ShipmentLine originalLine = (ShipmentLine)e.Row;
+            Shipment row = Shipments.Current;
+            // Checking whether the ShipmentTime, ShipmentMinTime,  or ShipmentMaxTime value has changed
+            if (row.ShipmentType != Shipment.ShipmentTypes.Single && !sender.ObjectsEqual<ShipmentLine.shipmentTime,
+                    ShipmentLine.shipmentMinTime, ShipmentLine.shipmentMaxTime>(line, originalLine))
+            {
+                // Checking that the delivery time is not smaller than  the minimum delivery time
+                if (line.ShipmentTime != null && line.ShipmentMinTime != null && line.ShipmentTime < line.ShipmentMinTime)
+                {
+                    sender.RaiseExceptionHandling<ShipmentLine.shipmentTime>(line, line.ShipmentTime,
+                            new PXSetPropertyException("Delivery Time is too early."));
+                    e.Cancel = true;
+                }
+                // Checking that the delivery time is not greater than the maximum delivery time
+                if (line.ShipmentTime != null && line.ShipmentMaxTime != null && line.ShipmentTime > line.ShipmentMaxTime)
+                {
+                    line.ShipmentTime = line.ShipmentMaxTime;
+                    sender.RaiseExceptionHandling<ShipmentLine.shipmentTime>(line, line.ShipmentTime,
+                            new PXSetPropertyException("Specified Delivery Time was too late.", PXErrorLevel.Warning));
+                }
+            }
         }
         protected virtual void ShipmentLine_RowUpdated(PXCache sender, PXRowUpdatedEventArgs e)
         {
@@ -326,10 +327,32 @@ namespace RB.RapidByte
                 }
                 rowUpdated = true;
             }
-            // Updating the shipment in the cache
-            if (rowUpdated == true)
+
+            // Calculating ShippedQty for shipments of Multiple delivery type
+            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
             {
-                Shipments.Update(row);
+                // Making the calculation if ShipmentDate or ShipmentTime has changed
+                if (!sender.ObjectsEqual<ShipmentLine.shipmentDate, ShipmentLine.shipmentTime>(newLine, oldLine))
+                {
+                    // Checking that both fields in the new data record have values
+                    if (newLine.ShipmentDate != null && newLine.ShipmentTime != null)
+                    {
+                        row.ShippedQty += newLine.LineQty;
+                        rowUpdated = true;
+                    }
+                    // Checking that both fields in the old data records have values
+                    if (oldLine.ShipmentDate != null && oldLine.ShipmentTime != null)
+                    {
+                        row.ShippedQty -= oldLine.LineQty;
+                        rowUpdated = true;
+                    }
+                }
+
+                // Updating the shipment in the cache if it was modifiedED
+                if (rowUpdated == true)
+                {
+                    Shipments.Update(row);
+                }
             }
         }
         protected virtual void ShipmentLine_RowDeleting(PXCache sender, PXRowDeletingEventArgs e)
@@ -366,6 +389,107 @@ namespace RB.RapidByte
                 Shipments.Update(row);
             }
         }
+        protected virtual void ShipmentLine_ProductID_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
+        {
+            // Obtain the new data record that contains the updated values of all data fields
+            ShipmentLine line = (ShipmentLine)e.Row;
+            line.Description = string.Empty;
+            if (line.ProductID != null)
+            {
+                Product product = PXSelectorAttribute.Select<ShipmentLine.productID>(sender, line) as Product;
+                if (product != null)
+                {
+                    // Copy the product name to the description of the shipment line
+                    line.Description = product.ProductName;
+                }
+            }
+        }
+        protected virtual void Shipment_ShipmentType_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
+        {
+            foreach (ShipmentLine line in ShipmentLines.Select())
+            {
+                line.ShipmentDate = null;
+                ShipmentLines.Cache.SetDefaultExt<ShipmentLine.shipmentMinTime>(line);
+                ShipmentLines.Cache.SetDefaultExt<ShipmentLine.shipmentMaxTime>(line);
+                // Updating the line in the cache
+                ShipmentLines.Update(line);
+            }
+        }
+        protected virtual void ShipmentLine_Gift_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
+        {
+            ShipmentLine line = (ShipmentLine)e.Row;
+            if (line == null)
+            {
+                return;
+            }
+            Product card = GiftCard.Select();
+            if (card != null && line.ProductID == card.ProductID)
+            {
+                // Setting the default value
+                e.NewValue = true;
+                // Setting a flag to prevent execution of FieldDefaulting event
+                // handlers that are defined in attributes
+                e.Cancel = true;
+            }
+        }
+        protected virtual void ShipmentLine_ShipmentMinTime_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
+        {
+            Shipment row = Shipments.Current;
+            if (row != null && row.ShipmentType != Shipment.ShipmentTypes.Single)
+            {
+                e.NewValue = "9:00 AM";
+            }
+            else
+            {
+                e.NewValue = null;
+            }
+        }
+        protected virtual void ShipmentLine_ShipmentMaxTime_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
+        {
+            Shipment row = Shipments.Current;
+            if (row != null && row.ShipmentType != Shipment.ShipmentTypes.Single)
+            {
+                e.NewValue = "7:00 PM";
+            }
+            else
+            {
+                e.NewValue = null;
+            }
+        }
+        protected virtual void ShipmentLine_LineQty_FieldVerifying(PXCache sender, PXFieldVerifyingEventArgs e)
+        {
+            ShipmentLine line = (ShipmentLine)e.Row;
+            if (e.NewValue == null)
+            {
+                return;
+            }
+            if ((decimal)e.NewValue < 0)
+            {
+                // Throwing an exception to cancel assignment of the new
+                // value to the field
+                throw new PXSetPropertyException("Item Qty. cannot be negative.");
+            }
+            // Retrieving the product related to the shipment line
+            Product product = PXSelect<Product, Where<Product.productID,
+                                Equal<Required<Product.productID>>>>.Select(this, line.ProductID);
+            if (product != null && (decimal)e.NewValue < product.MinAvailQty)
+            {
+                // Correcting the LineQty value
+                e.NewValue = product.MinAvailQty;
+
+                // Raising the ExceptionHandling event for LineQty to attach the exception object to the field
+                sender.RaiseExceptionHandling<ShipmentLine.lineQty>(line, e.NewValue,
+                                                new PXSetPropertyException(
+                                                "Item Qty. was too small for the selected product.",
+                                                PXErrorLevel.Warning));
+            }
+        }
+        protected virtual void ShipmentLine_ShipmentDate_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
+        {
+            ShipmentLine line = (ShipmentLine)e.Row;
+            line.ShipmentTime = null;
+        }
+
 
         #region CancelShipment
         public PXAction<Shipment> CancelShipment;
@@ -391,31 +515,87 @@ namespace RB.RapidByte
             Shipment row = Shipments.Current;
             PXCache cache = Shipments.Cache;
             bool errorOccured = false;
-            // Validating that DeliveryDate and DeliveryMaxDate are not null
-            if (row.DeliveryDate == null)
+
+            //// Validating that DeliveryDate and DeliveryMaxDate are not null
+            //if (row.DeliveryDate == null)
+            //{
+            //    cache.RaiseExceptionHandling<Shipment.deliveryDate>(row, row.DeliveryDate,
+            //            new PXSetPropertyException("Delivery date may not be empty."));
+            //    errorOccured = true;
+            //}
+            //if (row.DeliveryMaxDate == null)
+            //{
+            //    cache.RaiseExceptionHandling<Shipment.deliveryMaxDate>(row, row.DeliveryMaxDate,
+            //            new PXSetPropertyException("Delivery Before date may not be empty."));
+            //    errorOccured = true;
+            //}
+            //if (errorOccured)
+            //{
+            //    throw new PXException("Shipment '{0}' can not be delivered.", row.ShipmentNbr);
+            //}
+            //// Calculating total shipped quantity
+            //foreach (ShipmentLine line in ShipmentLines.Select())
+            //{
+            //    if (line.Cancelled != true)
+            //    {
+            //        row.ShippedQty += line.LineQty;
+            //    }
+            //}
+
+            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
             {
-                cache.RaiseExceptionHandling<Shipment.deliveryDate>(row, row.DeliveryDate,
-                        new PXSetPropertyException("Delivery date may not be empty."));
-                errorOccured = true;
+                // Preventing delivery when not all products have been delivered
+                if (row.PendingQty > 0)
+                {
+                    cache.RaiseExceptionHandling<Shipment.pendingQty>(
+                        row, row.PendingQty,
+                        new PXSetPropertyException(
+                        "Products have not been completely delivered yet."));
+                    errorOccured = true;
+                }
             }
-            if (row.DeliveryMaxDate == null)
+            else
             {
-                cache.RaiseExceptionHandling<Shipment.deliveryMaxDate>(row, row.DeliveryMaxDate,
-                        new PXSetPropertyException("Delivery Before date may not be empty."));
-                errorOccured = true;
+                // Ensuring that the DeliveryDate value is specified
+                if (row.DeliveryDate == null)
+                {
+                    cache.RaiseExceptionHandling<Shipment.deliveryDate>(
+                        row, row.DeliveryDate,
+                        new PXSetPropertyException(
+                        "Delivery date may not be empty."));
+                    errorOccured = true;
+                }
+                // Ensuring that the DeliveryMaxDate value is specified
+                if (row.DeliveryMaxDate == null)
+                {
+                    cache.RaiseExceptionHandling<Shipment.deliveryMaxDate>(
+                        row, row.DeliveryMaxDate,
+                        new PXSetPropertyException(
+                        "Delivery Before date may not be empty."));
+                    errorOccured = true;
+                }
             }
+            // Throwing an exception if validation hasn't passed
             if (errorOccured)
             {
                 throw new PXException("Shipment '{0}' can not be delivered.", row.ShipmentNbr);
             }
-            // Calculating total shipped quantity
-            foreach (ShipmentLine line in ShipmentLines.Select())
+            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
             {
-                if (line.Cancelled != true)
-                {
-                    row.ShippedQty += line.LineQty;
-                }
+                row.DeliveryDate = Accessinfo.BusinessDate;
             }
+            else
+            {
+                // Calculating the ShippedQty for the Single delivery type
+                foreach (ShipmentLine line in ShipmentLines.Select())
+                {
+                    if (line.Cancelled != true)
+                    {
+                        row.ShippedQty += line.LineQty;
+                    }
+                }
+            }
+
             // Changing the status
             row.Status = Shipment.ShipmentStatus.Delivered;
             // Updating the data record in the cache
