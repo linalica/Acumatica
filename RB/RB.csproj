@@ -92,6 +92,7 @@
     <Compile Include="RapidByte\DAC\Document.cs" />
     <Compile Include="RapidByte\DAC\OrderLine.cs" />
     <Compile Include="RapidByte\DAC\Product.cs" />
+    <Compile Include="RapidByte\DAC\ProductQty.cs" />
     <Compile Include="RapidByte\DAC\SalesOrder.cs" />
     <Compile Include="RapidByte\DAC\Setup.cs" />
     <Compile Include="RapidByte\DAC\Shipment.cs" />

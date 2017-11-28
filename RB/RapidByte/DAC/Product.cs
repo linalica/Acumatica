@@ -160,6 +160,19 @@
 		}
         #endregion
 
+        #region AvailQty
+        public abstract class availQty : PX.Data.IBqlField
+        {
+        }
+        [PXDecimal(2)]
+        [PXUIField(DisplayName = "Avail. Qty", Enabled = false)]
+        [PXDBScalar(
+        typeof(Search<ProductQty.availQty,
+        Where<ProductQty.productID, Equal<Product.productID>>>))]
+        public virtual decimal? AvailQty { get; set; }
+
+        #endregion
+
         public class decimal_0 : Constant<decimal>
         {
             public decimal_0()
