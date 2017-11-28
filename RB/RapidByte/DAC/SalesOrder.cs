@@ -2,8 +2,9 @@
 {
 	using System;
 	using PX.Data;
-	
-	[System.SerializableAttribute()]
+    using Descriptor;
+
+    [System.SerializableAttribute()]
 	public class SalesOrder : PX.Data.IBqlTable
 	{
 		#region OrderNbr
@@ -20,6 +21,9 @@
             typeof(SalesOrder.orderDate),
             typeof(SalesOrder.status),
             typeof(SalesOrder.customerID))]
+        [AutoNumber(
+            typeof(Setup.autoNumbering), 
+            typeof(Setup.salesOrderLastNbr))]
         public virtual string OrderNbr
 		{
 			get

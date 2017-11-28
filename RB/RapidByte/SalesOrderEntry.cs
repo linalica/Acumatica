@@ -14,6 +14,12 @@ namespace RB.RapidByte
         // Provides an interface for manipulation of detail lines of the specified order
         public PXSelect<OrderLine, Where<OrderLine.orderNbr, Equal<Current<SalesOrder.orderNbr>>>> OrderDetails;
 
+        public PXSetup<Setup> AutoNumSetup;
+        public SalesOrderEntry()
+        {
+            Setup setup = AutoNumSetup.Current;
+        }
+
         protected virtual void OrderLine_ProductID_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
         {
             OrderLine line = (OrderLine)e.Row;
