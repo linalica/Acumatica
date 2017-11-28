@@ -158,6 +158,14 @@
 				this._tstamp = value;
 			}
 		}
-		#endregion
-	}
+        #endregion
+
+        public class decimal_0 : Constant<decimal>
+        {
+            public decimal_0()
+            : base(0)
+            {
+            }
+        }
+    }
 }

@@ -225,7 +225,6 @@ namespace RB.RapidByte
             row.PendingQty -= row.ShippedQty;
             row.PendingQty += (decimal)e.OldValue;
         }
-
         //protected virtual void ShipmentLine_RowInserting(PXCache sender, PXRowInsertingEventArgs e)
         //{
         //    ShipmentLine line = (ShipmentLine)e.Row;
@@ -243,14 +242,6 @@ namespace RB.RapidByte
         //    }
 
         //}
-
-        protected virtual void ShipmentLine_RowInserted(PXCache sender, PXRowInsertedEventArgs e)
-        {
-            ShipmentLine line = (ShipmentLine)e.Row;
-            Shipment row = Shipments.Current;
-            row.TotalQty += line.LineQty;
-            Shipments.Update(row);
-        }
         protected virtual void ShipmentLine_RowSelected(PXCache sender, PXRowSelectedEventArgs e)
         {
             ShipmentLine line = (ShipmentLine)e.Row;
@@ -278,6 +269,13 @@ namespace RB.RapidByte
             PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMaxTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
 
         }
+        //protected virtual void ShipmentLine_RowInserted(PXCache sender, PXRowInsertedEventArgs e)
+        //{
+        //    ShipmentLine line = (ShipmentLine)e.Row;
+        //    Shipment row = Shipments.Current;
+        //    row.TotalQty += line.LineQty;
+        //    Shipments.Update(row);
+        //}
         protected virtual void ShipmentLine_RowUpdating(PXCache sender, PXRowUpdatingEventArgs e)
         {
             ShipmentLine line = (ShipmentLine)e.NewRow;
@@ -303,61 +301,61 @@ namespace RB.RapidByte
                 }
             }
         }
-        protected virtual void ShipmentLine_RowUpdated(PXCache sender, PXRowUpdatedEventArgs e)
-        {
-            ShipmentLine newLine = (ShipmentLine)e.Row;
-            ShipmentLine oldLine = (ShipmentLine)e.OldRow;
-            Shipment row = Shipments.Current;
-            bool rowUpdated = false;
-            // If the LineQty value has changed, adjust the TotalQty value accordingly
-            if (!sender.ObjectsEqual<ShipmentLine.lineQty>(newLine, oldLine) && newLine.Cancelled != true)
-            {
-                row.TotalQty -= oldLine.LineQty;
-                row.TotalQty += newLine.LineQty;
-                rowUpdated = true;
-            }
-            if (!sender.ObjectsEqual<ShipmentLine.cancelled>(newLine, oldLine))
-            {
-                // If the shipment line has been canceled, substract the value
-                if (newLine.Cancelled == true)
-                {
-                    row.TotalQty -= oldLine.LineQty;
-                }
-                // If the canceled shipment line has been restored, add its value back to the total value
-                else if (oldLine.Cancelled == true)
-                {
-                    row.TotalQty += newLine.LineQty;
-                }
-                rowUpdated = true;
-            }
+        //protected virtual void ShipmentLine_RowUpdated(PXCache sender, PXRowUpdatedEventArgs e)
+        //{
+        //    ShipmentLine newLine = (ShipmentLine)e.Row;
+        //    ShipmentLine oldLine = (ShipmentLine)e.OldRow;
+        //    Shipment row = Shipments.Current;
+        //    bool rowUpdated = false;
+        //    // If the LineQty value has changed, adjust the TotalQty value accordingly
+        //    if (!sender.ObjectsEqual<ShipmentLine.lineQty>(newLine, oldLine) && newLine.Cancelled != true)
+        //    {
+        //        row.TotalQty -= oldLine.LineQty;
+        //        row.TotalQty += newLine.LineQty;
+        //        rowUpdated = true;
+        //    }
+        //    if (!sender.ObjectsEqual<ShipmentLine.cancelled>(newLine, oldLine))
+        //    {
+        //        // If the shipment line has been canceled, substract the value
+        //        if (newLine.Cancelled == true)
+        //        {
+        //            row.TotalQty -= oldLine.LineQty;
+        //        }
+        //        // If the canceled shipment line has been restored, add its value back to the total value
+        //        else if (oldLine.Cancelled == true)
+        //        {
+        //            row.TotalQty += newLine.LineQty;
+        //        }
+        //        rowUpdated = true;
+        //    }
 
-            // Calculating ShippedQty for shipments of Multiple delivery type
-            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
-            {
-                // Making the calculation if ShipmentDate or ShipmentTime has changed
-                if (!sender.ObjectsEqual<ShipmentLine.shipmentDate, ShipmentLine.shipmentTime>(newLine, oldLine))
-                {
-                    // Checking that both fields in the new data record have values
-                    if (newLine.ShipmentDate != null && newLine.ShipmentTime != null)
-                    {
-                        row.ShippedQty += newLine.LineQty;
-                        rowUpdated = true;
-                    }
-                    // Checking that both fields in the old data records have values
-                    if (oldLine.ShipmentDate != null && oldLine.ShipmentTime != null)
-                    {
-                        row.ShippedQty -= oldLine.LineQty;
-                        rowUpdated = true;
-                    }
-                }
+        //    // Calculating ShippedQty for shipments of Multiple delivery type
+        //    if (row.ShipmentType != Shipment.ShipmentTypes.Single)
+        //    {
+        //        // Making the calculation if ShipmentDate or ShipmentTime has changed
+        //        if (!sender.ObjectsEqual<ShipmentLine.shipmentDate, ShipmentLine.shipmentTime>(newLine, oldLine))
+        //        {
+        //            // Checking that both fields in the new data record have values
+        //            if (newLine.ShipmentDate != null && newLine.ShipmentTime != null)
+        //            {
+        //                row.ShippedQty += newLine.LineQty;
+        //                rowUpdated = true;
+        //            }
+        //            // Checking that both fields in the old data records have values
+        //            if (oldLine.ShipmentDate != null && oldLine.ShipmentTime != null)
+        //            {
+        //                row.ShippedQty -= oldLine.LineQty;
+        //                rowUpdated = true;
+        //            }
+        //        }
 
-                // Updating the shipment in the cache if it was modifiedED
-                if (rowUpdated == true)
-                {
-                    Shipments.Update(row);
-                }
-            }
-        }
+        //        // Updating the shipment in the cache if it was modifiedED
+        //        if (rowUpdated == true)
+        //        {
+        //            Shipments.Update(row);
+        //        }
+        //    }
+        //}
         protected virtual void ShipmentLine_RowDeleting(PXCache sender, PXRowDeletingEventArgs e)
         {
             ShipmentLine line = (ShipmentLine)e.Row;
@@ -380,18 +378,18 @@ namespace RB.RapidByte
                 }
             }
         }
-        protected virtual void ShipmentLine_RowDeleted(PXCache sender, PXRowDeletedEventArgs e)
-        {
-            ShipmentLine line = (ShipmentLine)e.Row;
-            Shipment row = Shipments.Current;
-            if (line.Cancelled != true &&
-                Shipments.Cache.GetStatus(row) != PXEntryStatus.InsertedDeleted &&
-                Shipments.Cache.GetStatus(row) != PXEntryStatus.Deleted)
-            {
-                row.TotalQty -= line.LineQty;
-                Shipments.Update(row);
-            }
-        }
+        //protected virtual void ShipmentLine_RowDeleted(PXCache sender, PXRowDeletedEventArgs e)
+        //{
+        //    ShipmentLine line = (ShipmentLine)e.Row;
+        //    Shipment row = Shipments.Current;
+        //    if (line.Cancelled != true &&
+        //        Shipments.Cache.GetStatus(row) != PXEntryStatus.InsertedDeleted &&
+        //        Shipments.Cache.GetStatus(row) != PXEntryStatus.Deleted)
+        //    {
+        //        row.TotalQty -= line.LineQty;
+        //        Shipments.Update(row);
+        //    }
+        //}
         protected virtual void ShipmentLine_ProductID_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
         {
             // Obtain the new data record that contains the updated values of all data fields

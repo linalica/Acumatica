@@ -391,6 +391,12 @@
         {
             public const string Single = "S";
             public const string Multiple = "M";
+            public class multiple : Constant<string>
+            {
+                public multiple() : base(Multiple)
+                {
+                }
+            }
         }
         public static class ShipmentStatus
         {
