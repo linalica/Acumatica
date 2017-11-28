@@ -58,7 +58,8 @@ namespace RB.RapidByte
 
             // Preventing insertion and deletion of shipment lines for shipments whose shipping has started
             ShipmentLines.Cache.AllowInsert = row.Status != Shipment.ShipmentStatus.Shipping;
-            ShipmentLines.Cache.AllowDelete = row.Status != Shipment.ShipmentStatus.Shipping;
+            ShipmentLines.Cache.AllowDelete = row.Status != Shipment.ShipmentStatus.Shipping;
+
             // Configuring columns of the details grid
             PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentDate>(ShipmentLines.Cache, null, row.ShipmentType != Shipment.ShipmentTypes.Single);
             PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentTime>(ShipmentLines.Cache, null, row.ShipmentType != Shipment.ShipmentTypes.Single);
@@ -217,7 +218,8 @@ namespace RB.RapidByte
         {
             Shipment row = (Shipment)e.Row;
             row.PendingQty = row.TotalQty - row.ShippedQty;
-        }        protected virtual void Shipment_ShippedQty_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
+        }
+        protected virtual void Shipment_ShippedQty_FieldUpdated(PXCache sender, PXFieldUpdatedEventArgs e)
         {
             Shipment row = (Shipment)e.Row;
             row.PendingQty -= row.ShippedQty;
@@ -273,7 +275,8 @@ namespace RB.RapidByte
             PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentDate>(sender, line, row.Status == Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
             PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentTime>(sender, line, row.Status == Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
             PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMinTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMaxTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMaxTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
+
         }
         protected virtual void ShipmentLine_RowUpdating(PXCache sender, PXRowUpdatingEventArgs e)
         {
@@ -491,7 +494,7 @@ namespace RB.RapidByte
         }
 
 
-        #region CancelShipment
+        #region CancelShipment Action
         public PXAction<Shipment> CancelShipment;
         [PXButton(CommitChanges = true)]
         [PXUIField(DisplayName = "Cancel Shipment")]
@@ -506,7 +509,7 @@ namespace RB.RapidByte
         }
         #endregion
 
-        #region DeliverShipment
+        #region DeliverShipment Action
         public PXAction<Shipment> DeliverShipment;
         [PXButton(CommitChanges = true)]
         [PXUIField(DisplayName = "Deliver Shipment")]
@@ -594,7 +597,8 @@ namespace RB.RapidByte
                         row.ShippedQty += line.LineQty;
                     }
                 }
-            }
+            }
+
 
             // Changing the status
             row.Status = Shipment.ShipmentStatus.Delivered;
@@ -602,6 +606,7 @@ namespace RB.RapidByte
             Shipments.Update(row);
             // Saving changes in the database
             Actions.PressSave();
-        }        #endregion
+        }
+        #endregion
     }
 }
