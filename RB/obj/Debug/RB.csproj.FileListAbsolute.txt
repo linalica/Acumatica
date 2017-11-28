@@ -119,3 +119,4 @@ C:\Training\Acumatica Framework\MyRapidByte\RB\bin\Debug\zh-Hans\System.Spatial.
 C:\Training\Acumatica Framework\MyRapidByte\RB\bin\Debug\zh-Hant\System.Spatial.resources.dll
 C:\Training\Acumatica Framework\MyRapidByte\RB\obj\Debug\RB.dll
 C:\Training\Acumatica Framework\MyRapidByte\RB\obj\Debug\RB.pdb
+C:\Training\Acumatica Framework\MyRapidByte\RB\obj\Debug\RB.csprojResolveAssemblyReference.cache
