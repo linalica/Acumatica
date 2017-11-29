@@ -102,6 +102,7 @@
     <Compile Include="RapidByte\Descriptor\Attribute.cs" />
     <Compile Include="RapidByte\ProductMaint.cs" />
     <Compile Include="RapidByte\ReceiptEntry.cs" />
+    <Compile Include="RapidByte\ReorderProcess.cs" />
     <Compile Include="RapidByte\SalesOrderEntry.cs" />
     <Compile Include="RapidByte\SalesOrderInq.cs" />
     <Compile Include="RapidByte\SalesOrderProcess.cs" />
