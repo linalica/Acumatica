@@ -51,35 +51,35 @@ namespace RB.RapidByte
             }
 
             // Configuring fields of the master form
-            PXUIFieldAttribute.SetEnabled<Shipment.deliveryDate>(sender, row, row.ShipmentType == Shipment.ShipmentTypes.Single);
-            PXUIFieldAttribute.SetEnabled<Shipment.shipmentDate>(sender, row, row.Status == Shipment.ShipmentStatus.Shipping);
-            PXUIFieldAttribute.SetVisible<Shipment.deliveryMaxDate>(sender, row, row.ShipmentType == Shipment.ShipmentTypes.Single);
-            PXUIFieldAttribute.SetVisible<Shipment.pendingQty>(sender, row, row.ShipmentType != Shipment.ShipmentTypes.Single);
+            PXUIFieldAttribute.SetEnabled<Shipment.deliveryDate>(sender, row, row.ShipmentType == ShipmentTypes.Single);
+            PXUIFieldAttribute.SetEnabled<Shipment.shipmentDate>(sender, row, row.Status == ShipmentStatus.Shipping);
+            PXUIFieldAttribute.SetVisible<Shipment.deliveryMaxDate>(sender, row, row.ShipmentType == ShipmentTypes.Single);
+            PXUIFieldAttribute.SetVisible<Shipment.pendingQty>(sender, row, row.ShipmentType != ShipmentTypes.Single);
 
             // Preventing insertion and deletion of shipment lines for shipments whose shipping has started
-            ShipmentLines.Cache.AllowInsert = row.Status != Shipment.ShipmentStatus.Shipping;
-            ShipmentLines.Cache.AllowDelete = row.Status != Shipment.ShipmentStatus.Shipping;
+            ShipmentLines.Cache.AllowInsert = row.Status != ShipmentStatus.Shipping;
+            ShipmentLines.Cache.AllowDelete = row.Status != ShipmentStatus.Shipping;
 
             // Configuring columns of the details grid
-            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentDate>(ShipmentLines.Cache, null, row.ShipmentType != Shipment.ShipmentTypes.Single);
-            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentTime>(ShipmentLines.Cache, null, row.ShipmentType != Shipment.ShipmentTypes.Single);
-            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentMinTime>(ShipmentLines.Cache, null, row.ShipmentType != Shipment.ShipmentTypes.Single);
-            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentMaxTime>(ShipmentLines.Cache, null, row.ShipmentType != Shipment.ShipmentTypes.Single);
+            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentDate>(ShipmentLines.Cache, null, row.ShipmentType != ShipmentTypes.Single);
+            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentTime>(ShipmentLines.Cache, null, row.ShipmentType != ShipmentTypes.Single);
+            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentMinTime>(ShipmentLines.Cache, null, row.ShipmentType != ShipmentTypes.Single);
+            PXUIFieldAttribute.SetVisible<ShipmentLine.shipmentMaxTime>(ShipmentLines.Cache, null, row.ShipmentType != ShipmentTypes.Single);
 
             // If a shipment is not canceled or delivered
-            if (row.Status != Shipment.ShipmentStatus.Cancelled && row.Status != Shipment.ShipmentStatus.Delivered)
+            if (row.Status != ShipmentStatus.Cancelled && row.Status != ShipmentStatus.Delivered)
             {
                 // Preventing deletion of Shipment data records unless the status is Shipping and ShippedQty is 0
-                Shipments.Cache.AllowDelete = row.Status != Shipment.ShipmentStatus.Shipping && row.ShippedQty == 0;
+                Shipments.Cache.AllowDelete = row.Status != ShipmentStatus.Shipping && row.ShippedQty == 0;
                 PXUIFieldAttribute.SetEnabled(sender, row, true);
-                PXUIFieldAttribute.SetEnabled<Shipment.deliveryDate>(sender, row, row.ShipmentType == Shipment.ShipmentTypes.Single);
-                PXUIFieldAttribute.SetEnabled<Shipment.shipmentDate>(sender, row, row.Status == Shipment.ShipmentStatus.Shipping);
+                PXUIFieldAttribute.SetEnabled<Shipment.deliveryDate>(sender, row, row.ShipmentType == ShipmentTypes.Single);
+                PXUIFieldAttribute.SetEnabled<Shipment.shipmentDate>(sender, row, row.Status == ShipmentStatus.Shipping);
                 // Changing the list of possible values in the Status drop-down control
                 PXStringListAttribute.SetList<Shipment.status>(sender, row,
                     new string[]
                     {
-                        Shipment.ShipmentStatus.OnHold,
-                        Shipment.ShipmentStatus.Shipping,
+                        ShipmentStatus.OnHold,
+                        ShipmentStatus.Shipping,
                     },
                     new string[]
                     {
@@ -87,13 +87,13 @@ namespace RB.RapidByte
                         "Shipping",
                     });
                 // Limiting insertion, update, and deletion of ShipmentLines data records
-                ShipmentLines.Cache.AllowInsert = row.Status != Shipment.ShipmentStatus.Shipping;
+                ShipmentLines.Cache.AllowInsert = row.Status != ShipmentStatus.Shipping;
                 ShipmentLines.Cache.AllowUpdate = true;
-                ShipmentLines.Cache.AllowDelete = row.Status != Shipment.ShipmentStatus.Shipping;
+                ShipmentLines.Cache.AllowDelete = row.Status != ShipmentStatus.Shipping;
 
                 // Enabling or disabling the actions in the UI
-                CancelShipment.SetEnabled(row.Status == Shipment.ShipmentStatus.Shipping && Shipments.Cache.GetStatus(row) != PXEntryStatus.Inserted);
-                DeliverShipment.SetEnabled(row.Status == Shipment.ShipmentStatus.Shipping && Shipments.Cache.GetStatus(row) != PXEntryStatus.Inserted);
+                CancelShipment.SetEnabled(row.Status == ShipmentStatus.Shipping && Shipments.Cache.GetStatus(row) != PXEntryStatus.Inserted);
+                DeliverShipment.SetEnabled(row.Status == ShipmentStatus.Shipping && Shipments.Cache.GetStatus(row) != PXEntryStatus.Inserted);
             }
             else
             {
@@ -107,8 +107,8 @@ namespace RB.RapidByte
                 PXStringListAttribute.SetList<Shipment.status>(sender, row,
                     new string[]
                     {
-                        Shipment.ShipmentStatus.Cancelled,
-                        Shipment.ShipmentStatus.Delivered
+                        ShipmentStatus.Cancelled,
+                        ShipmentStatus.Delivered
                     },
                     new string[]
                     {
@@ -130,7 +130,7 @@ namespace RB.RapidByte
             Shipment row = (Shipment)e.NewRow;
             // The data record as stored in the cache
             Shipment originalRow = (Shipment)e.Row;
-            if (row.ShipmentType == Shipment.ShipmentTypes.Single && !sender.ObjectsEqual<Shipment.deliveryMaxDate>(row, originalRow))
+            if (row.ShipmentType == ShipmentTypes.Single && !sender.ObjectsEqual<Shipment.deliveryMaxDate>(row, originalRow))
             {
                 if (row.DeliveryDate != null && row.DeliveryMaxDate != null && row.DeliveryMaxDate < row.DeliveryDate)
                 {
@@ -143,7 +143,7 @@ namespace RB.RapidByte
                         PXErrorLevel.Warning));
                 }
             }
-            else if (row.ShipmentType == Shipment.ShipmentTypes.Single && !sender.ObjectsEqual<Shipment.deliveryDate>(row, originalRow))
+            else if (row.ShipmentType == ShipmentTypes.Single && !sender.ObjectsEqual<Shipment.deliveryDate>(row, originalRow))
             {
                 if (row.DeliveryDate != null && row.DeliveryMaxDate != null && row.DeliveryDate > row.DeliveryMaxDate)
                 {
@@ -179,7 +179,7 @@ namespace RB.RapidByte
             }
 
             bool errorOccured = false;
-            if ((string)e.NewValue == Shipment.ShipmentStatus.Shipping)
+            if ((string)e.NewValue == ShipmentStatus.Shipping)
             {
                 // Validating LineQty in all related ShipmentLine data records
                 foreach (ShipmentLine line in ShipmentLines.Select())
@@ -209,7 +209,7 @@ namespace RB.RapidByte
             {
                 return;
             }
-            if ((string)e.NewValue == Shipment.ShipmentTypes.Single && row.ShippedQty > 0)
+            if ((string)e.NewValue == ShipmentTypes.Single && row.ShippedQty > 0)
             {
                 throw new PXSetPropertyException("Delivery Type can not be changed when a shipment is partially delivered.");
             }
@@ -251,22 +251,22 @@ namespace RB.RapidByte
                 return;
             }
             PXUIFieldAttribute.SetEnabled(sender, line, line.Gift != true);
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.lineQty>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping);
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.lineQty>(sender, line, line.Gift != true && row.Status != ShipmentStatus.Shipping);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != ShipmentStatus.Shipping);
             // Enabling or disabling the Cancelled field
-            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
+            if (row.ShipmentType != ShipmentTypes.Single)
             {
-                PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping && line.ShipmentDate == null);
+                PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != ShipmentStatus.Shipping && line.ShipmentDate == null);
             }
             else
             {
-                PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != Shipment.ShipmentStatus.Shipping);
+                PXUIFieldAttribute.SetEnabled<ShipmentLine.cancelled>(sender, line, line.Gift != true && row.Status != ShipmentStatus.Shipping);
             }
             // Enabling or disabling other fields
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentDate>(sender, line, row.Status == Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentTime>(sender, line, row.Status == Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMinTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
-            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMaxTime>(sender, line, row.Status != Shipment.ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentDate>(sender, line, row.Status == ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentTime>(sender, line, row.Status == ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMinTime>(sender, line, row.Status != ShipmentStatus.Shipping && line.Cancelled != true);
+            PXUIFieldAttribute.SetEnabled<ShipmentLine.shipmentMaxTime>(sender, line, row.Status != ShipmentStatus.Shipping && line.Cancelled != true);
 
         }
         //protected virtual void ShipmentLine_RowInserted(PXCache sender, PXRowInsertedEventArgs e)
@@ -282,7 +282,7 @@ namespace RB.RapidByte
             ShipmentLine originalLine = (ShipmentLine)e.Row;
             Shipment row = Shipments.Current;
             // Checking whether the ShipmentTime, ShipmentMinTime,  or ShipmentMaxTime value has changed
-            if (row.ShipmentType != Shipment.ShipmentTypes.Single && !sender.ObjectsEqual<ShipmentLine.shipmentTime,
+            if (row.ShipmentType != ShipmentTypes.Single && !sender.ObjectsEqual<ShipmentLine.shipmentTime,
                     ShipmentLine.shipmentMinTime, ShipmentLine.shipmentMaxTime>(line, originalLine))
             {
                 // Checking that the delivery time is not smaller than  the minimum delivery time
@@ -436,7 +436,7 @@ namespace RB.RapidByte
         protected virtual void ShipmentLine_ShipmentMinTime_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
         {
             Shipment row = Shipments.Current;
-            if (row != null && row.ShipmentType != Shipment.ShipmentTypes.Single)
+            if (row != null && row.ShipmentType != ShipmentTypes.Single)
             {
                 e.NewValue = "9:00 AM";
             }
@@ -448,7 +448,7 @@ namespace RB.RapidByte
         protected virtual void ShipmentLine_ShipmentMaxTime_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
         {
             Shipment row = Shipments.Current;
-            if (row != null && row.ShipmentType != Shipment.ShipmentTypes.Single)
+            if (row != null && row.ShipmentType != ShipmentTypes.Single)
             {
                 e.NewValue = "7:00 PM";
             }
@@ -499,7 +499,7 @@ namespace RB.RapidByte
         protected virtual void cancelShipment()
         {
             Shipment row = Shipments.Current;
-            row.Status = Shipment.ShipmentStatus.Cancelled;
+            row.Status = ShipmentStatus.Cancelled;
             // Update the data record in the cache of Shipment data records
             Shipments.Update(row);
             // Triggering the Save action to save changes in the database
@@ -543,7 +543,7 @@ namespace RB.RapidByte
             //    }
             //}
 
-            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
+            if (row.ShipmentType != ShipmentTypes.Single)
             {
                 // Preventing delivery when not all products have been delivered
                 if (row.PendingQty > 0)
@@ -581,7 +581,7 @@ namespace RB.RapidByte
             {
                 throw new PXException("Shipment '{0}' can not be delivered.", row.ShipmentNbr);
             }
-            if (row.ShipmentType != Shipment.ShipmentTypes.Single)
+            if (row.ShipmentType != ShipmentTypes.Single)
             {
                 row.DeliveryDate = Accessinfo.BusinessDate;
             }
@@ -599,7 +599,7 @@ namespace RB.RapidByte
 
 
             // Changing the status
-            row.Status = Shipment.ShipmentStatus.Delivered;
+            row.Status = ShipmentStatus.Delivered;
             // Updating the data record in the cache
             Shipments.Update(row);
             // Saving changes in the database

@@ -171,14 +171,16 @@
         Where<ProductQty.productID, Equal<Product.productID>>>))]
         public virtual decimal? AvailQty { get; set; }
 
-        #endregion
+        #endregion
 
-        public class decimal_0 : Constant<decimal>
+
+        
+    }
+    public class decimal_0 : Constant<decimal>
+    {
+        public decimal_0()
+        : base(0)
         {
-            public decimal_0()
-            : base(0)
-            {
-            }
         }
     }
 }

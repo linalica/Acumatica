@@ -301,4 +301,34 @@
         }
         #endregion
     }
+
+    [SupplierDataAccumulator]
+    [System.SerializableAttribute()]
+    public class SupplierData : SupplierProduct
+    {
+    }
+
+
+    public class SupplierDataAccumulatorAttribute : PXAccumulatorAttribute
+    {
+        public SupplierDataAccumulatorAttribute()
+        {
+            _SingleRecord = true;
+        }
+        protected override bool PrepareInsert(PXCache sender, object row,
+        PXAccumulatorCollection columns)
+        {
+            if (!base.PrepareInsert(sender, row, columns))
+            {
+                return false;
+            }
+            SupplierData supplierData = (SupplierData)row;
+            columns.Update<SupplierData.supplierPrice>(supplierData.SupplierPrice, PXDataFieldAssign.AssignBehavior.Initialize);
+            columns.Update<SupplierData.supplierUnit>(supplierData.SupplierUnit, PXDataFieldAssign.AssignBehavior.Initialize);
+            columns.Update<SupplierData.conversionFactor>(supplierData.ConversionFactor, PXDataFieldAssign.AssignBehavior.Initialize);
+            columns.Update<SupplierData.lastSupplierPrice>(supplierData.LastSupplierPrice, PXDataFieldAssign.AssignBehavior.Replace);
+            columns.Update<SupplierData.lastPurchaseDate>(supplierData.LastPurchaseDate, PXDataFieldAssign.AssignBehavior.Replace);
+            return true;
+        }
+    }
 }

@@ -26,7 +26,8 @@ namespace RB.RapidByte
             typeof(Product.productCD),
             typeof(Product.productName),
             typeof(Product.unitPrice),
-            typeof(Product.stockUnit))]
+            typeof(Product.stockUnit),
+            typeof(Product.availQty))]
         // The event handler is empty, defined just to replace attributes
         protected void Product_ProductCD_CacheAttached(PXCache sender)
         {

@@ -95,14 +95,14 @@
         [PXUnboundFormula(
              typeof(Switch<Case<Where<ShipmentLine.cancelled, Equal<False>>,
              ShipmentLine.lineQty>,
-             Product.decimal_0>),
+             decimal_0>),
              typeof(SumCalc<Shipment.totalQty>))]        [PXUnboundFormula(
                  typeof(Switch<Case<Where<Current<Shipment.shipmentType>,
-                 Equal<Shipment.ShipmentTypes.multiple>,
+                 Equal<ShipmentTypes.multiple>,
                  And<ShipmentLine.shipmentDate, IsNotNull,
                  And<ShipmentLine.shipmentTime, IsNotNull>>>,
                  ShipmentLine.lineQty>,
-                 Product.decimal_0>),
+                 decimal_0>),
                  typeof(SumCalc<Shipment.shippedQty>))]
         public virtual decimal? LineQty
         {

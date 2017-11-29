@@ -16,7 +16,9 @@ namespace RB.RapidByte
 
         public PXCancel<SalesOrderFilter> Cancel;
 
-        public PXFilter<SalesOrderFilter> Filter;
+        public PXFilter<SalesOrderFilter> Filter;
+
+
         [Serializable]
         public class SalesOrderFilter : IBqlTable
         {
@@ -59,7 +61,8 @@ namespace RB.RapidByte
                 })]
             public virtual string Status { get; set; }
             #endregion
-        }
+        }
+
 
     }
 }

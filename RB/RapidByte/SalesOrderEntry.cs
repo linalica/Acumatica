@@ -11,6 +11,9 @@ namespace RB.RapidByte
     {
         // Provides an interface for manipulation of sales orders
         public PXSelect<SalesOrder> Orders;
+
+        public PXSelect<ProductQty> Stock;
+
         // Provides an interface for manipulation of detail lines of the specified order
         public PXSelect<OrderLine, Where<OrderLine.orderNbr, Equal<Current<SalesOrder.orderNbr>>>> OrderDetails;
 
@@ -156,6 +159,27 @@ namespace RB.RapidByte
             SalesOrder order = (SalesOrder)e.Row;
             order.OrderTotal = order.LinesTotal + order.TaxTotal;
         }
+        protected virtual void SalesOrder_RowSelected(PXCache sender, PXRowSelectedEventArgs e)
+        {
+            SalesOrder order = (SalesOrder)e.Row;
+            if (order == null)
+            {
+                return;
+            }
+
+            bool editable = order.Status != OrderStatus.Approved && order.Status != OrderStatus.Completed;
+
+            Orders.Cache.AllowUpdate = editable;
+            Orders.Cache.AllowDelete = editable;
+
+            PXUIFieldAttribute.SetEnabled(sender, order, editable);
+            OrderDetails.Cache.AllowDelete = editable;
+            OrderDetails.Cache.AllowInsert = editable;
+            OrderDetails.Cache.AllowUpdate = editable;
+            Approve.SetEnabled(editable && order.Hold != true);
+            Release.SetEnabled(order.Status == OrderStatus.Approved && order.Status != OrderStatus.Completed);
+        }
+        
 
         protected decimal? CalcLinePrice(decimal? unitPrice, decimal? qty, decimal? discount)
         {
@@ -182,6 +206,24 @@ namespace RB.RapidByte
             }
         }
 
+        public static void ReleaseOrder(SalesOrder order)
+        {
+            SalesOrderEntry graph = PXGraph.CreateInstance<SalesOrderEntry>();
+            graph.Orders.Current = order;
+            foreach (OrderLine line in graph.OrderDetails.Select())
+            {
+                ProductQty productQty = new ProductQty();
+                productQty.ProductID = line.ProductID;
+                productQty.AvailQty = -line.OrderQty;
+                graph.Stock.Insert(productQty);
+            }
+            order.ShippedDate = graph.Accessinfo.BusinessDate;
+            order.Status = OrderStatus.Completed;
+            graph.Orders.Update(order);
+            graph.Persist();
+        }
+
+        #region Approve action
         public PXAction<SalesOrder> Approve;
         [PXProcessButton]
         [PXUIField(DisplayName = "Approve")]
@@ -198,28 +240,24 @@ namespace RB.RapidByte
                 yield return order;
             }
         }
+        #endregion
 
-        
-        protected virtual void SalesOrder_RowSelected(PXCache sender, PXRowSelectedEventArgs e)
+        #region Release action
+        public PXAction<SalesOrder> Release;
+        [PXProcessButton]
+        [PXUIField(DisplayName = "Release")]
+        protected virtual IEnumerable release(PXAdapter adapter)
         {
-            SalesOrder order = (SalesOrder)e.Row;
-            if (order == null)
+            SalesOrder order = Orders.Current;
+            PXLongOperation.StartOperation(this, delegate ()
             {
-                return;
-            }
-
-            bool editable = order.Status != OrderStatus.Approved && order.Status != OrderStatus.Completed;
-
-            Orders.Cache.AllowUpdate = editable;
-            Orders.Cache.AllowDelete = editable;
-
-            PXUIFieldAttribute.SetEnabled(sender, order, editable);
-            OrderDetails.Cache.AllowDelete = editable;
-            OrderDetails.Cache.AllowInsert = editable;
-            OrderDetails.Cache.AllowUpdate = editable;
-            Approve.SetEnabled(editable && order.Hold != true);
+                ReleaseOrder(order);
+            });
+            return adapter.Get();
         }
-        
+        #endregion
+
+
 
     }
 }

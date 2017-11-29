@@ -181,7 +181,8 @@ namespace RB.RapidByte
             {
                 throw new PXRedirectRequiredException(graph, true, "Product Details");
             }
-        }
+        }
+
         protected void CalcAggregates(ref SupplierProduct pendingProduct, ref Supplier pendingSupplier,
                                         ref int supplierCount, List<string> countries)
         {
@@ -236,7 +237,8 @@ namespace RB.RapidByte
             pendingSupplier = null;
             supplierCount = 0;
             countries.Clear();
-        }
+        }
+
 
 
         // A filter is an ordinary DAC that consists of unbound data fields

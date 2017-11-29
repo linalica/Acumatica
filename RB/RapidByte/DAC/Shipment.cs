@@ -387,23 +387,25 @@
         }
         #endregion
 
-        public static class ShipmentTypes
+        
+    }
+
+    public static class ShipmentTypes
+    {
+        public const string Single = "S";
+        public const string Multiple = "M";
+        public class multiple : Constant<string>
         {
-            public const string Single = "S";
-            public const string Multiple = "M";
-            public class multiple : Constant<string>
+            public multiple() : base(Multiple)
             {
-                public multiple() : base(Multiple)
-                {
-                }
             }
         }
-        public static class ShipmentStatus
-        {
-            public const string OnHold = "H";
-            public const string Shipping = "S";
-            public const string Cancelled = "C";
-            public const string Delivered = "D";
-        }
+    }
+    public static class ShipmentStatus
+    {
+        public const string OnHold = "H";
+        public const string Shipping = "S";
+        public const string Cancelled = "C";
+        public const string Delivered = "D";
     }
 }
